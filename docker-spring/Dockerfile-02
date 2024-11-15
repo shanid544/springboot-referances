@@ -1,0 +1,20 @@
+# Use OpenJDK 17 as the base image
+FROM openjdk:17-jdk-slim
+
+# Add a new group and user named 'spring'
+RUN addgroup --system spring && adduser --system --ingroup spring spring
+
+# Switch to the 'spring' user to run the application (non-root user)
+# after run docker, go inside using docker exec, type whoami -> spring
+# and check the group as well
+
+USER spring:spring
+
+# Define an argument for the location of the JAR file
+ARG JAR_FILE=target/*.jar
+
+# Copy the JAR file from the host machine into the container
+COPY ${JAR_FILE} app.jar
+
+# Define the entry point to run the JAR file using the 'java -jar' command
+ENTRYPOINT ["java","-jar","/app.jar"]
